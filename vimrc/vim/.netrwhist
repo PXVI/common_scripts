@@ -1,0 +1,10 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =8
+let g:netrw_dirhist_1='/proj11_DDR/usr/padmakarr/workspace/emmc_workspace/23_05_03_12_49_EMMC_PARDHU_CHANGES_MERGE/tc_sd_card_uvm_vip_pardhu'
+let g:netrw_dirhist_2='/proj11_DDR/usr/padmakarr/workspace/emmc_workspace/23_05_03_12_49_EMMC_PARDHU_CHANGES_MERGE'
+let g:netrw_dirhist_3='/proj11_DDR/usr/padmakarr/workspace/emmc_workspace'
+let g:netrw_dirhist_4='/proj11_DDR/usr/padmakarr/workspace'
+let g:netrw_dirhist_5='/proj11_DDR/usr/padmakarr/workspace/tcshrc_workspace'
+let g:netrw_dirhist_6='/proj11_DDR/usr/padmakarr/workspace'
+let g:netrw_dirhist_7='/proj11_DDR/usr/padmakarr/workspace/vimrc_workspace'
+let g:netrw_dirhist_8='/proj11_DDR/usr/padmakarr/workspace/vimrc_workspace/stable_build'

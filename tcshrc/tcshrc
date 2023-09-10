@@ -1,0 +1,222 @@
+
+if ($?LOGNAME == "root") then
+    set -f path = ( $path /sbin )
+    set -f path = ( $path /usr/sbin )
+    set -l path = ( $path /usr/local/sbin )
+endif
+
+setenv TC_CAD_HOME /tools/tc_cad_home
+#setenv TC_CAD_HOME /tru/diksha/New_cad_home/tc_cad_home_21.3.1.00
+#setenv TC_CAD_HOME /proj11_DDR/adityaan/workspace/lpddr/RELEASE _LP4/lpddr_release/tc_cad_home_21.3.1.01
+
+setenv TOOLS /tools/source
+################	QUESTA #############################
+setenv MTI_HOME /tools/questa-/2021.2/questasim/
+
+setenv UVM_HOME $MTI_HOME/verilog_src/uvm-1.1d
+setenv MSIRUN_HISTORY_OFF
+setenv OVM_HOME $MTI_HOME/verilog_src/ovm-2.1.1
+set path = ( $MTI_HOME/bin /tools/verilog/bin /tools/gtkwave/bin $path /usr/local/bin /bin /usr/bin /usr/X11R6/bin)
+
+################    NC     #############################             
+set PATH = ( /tools/cadence-/cadence-/xcelium-/mdv/tools.lnx86/bin/64bit:$PATH) 
+setenv MDV_HOME /tools/cadence-/vmanager-/VMANAGER21.09.003/tools.lnx86
+setenv MDV_XLM_HOME /tools/cadence-/xcelium-/21.03.009/
+setenv NC_HOME /tools/cadence-/xcelium-/21.03.009/tools.lnx86
+setenv IUSHOME /tools/cadence-/xcelium-/21.03.009
+
+################    VCS    #############################
+setenv VCS_HOME /tools/synopsys-/vcs/Q-2020.03-SP1
+setenv PATH "$VCS_HOME/bin:$PATH"
+setenv SNPSLMD_LICENSE_FILE 27020@tc29
+
+################   LICENSE #############################
+setenv RLM_LICENSE 5056@10.0.1.6
+setenv CDS_LIC_FILE 5280@tc05:5280@tc29
+
+setenv MGLS_LICENSE_FILE 1717@10.0.1.65:1717@tc05:1717@tc29
+setenv LM_LICENSE_FILE  5280@tc05:5280@tc29
+setenv CDS_LIC_QUEUE_POLL 1
+
+setenv LD_LIBRARY_PATH /tools/gtkwave/lib
+set path = ( $VCS_HOME/bin $path )
+set path = ( $NC_HOME $path )
+set path = ( $IUSHOME/tools.lnx86/bin $path)
+set path = ( $TC_CAD_HOME/kits/RLM $path)
+if ($?USER == 0 || $?prompt == 0) exit
+
+#setenv RIVIERA_HOME /tools/aldec-/Riviera-PRO-2021.10.114
+
+set path = ( $VCS_HOME/bin  $NC_HOME/bin $MDV_HOME/bin/ $path )
+setenv LD_LIBRARY_PATH "$VCS_HOME/linux/lib/:$VCS_HOME/linux64/lib/:$LD_LIBRARY_PATH"
+setenv LD_LIBRARY_PATH "$NC_HOME/lib/:$NC_HOME/lib64/:$LD_LIBRARY_PATH"
+
+# --------------------------------------------------------------
+# :P 
+# --------------------------------------------------------------
+# Variables : 22 October, 2019 [03:14:02 PM]
+# --------------------------------------------------------------
+
+setenv SH_FILE ~/common_scripts/scripts/mojojojo_sh_functions
+
+# Creating The Source File
+touch ~/temp_setenv_file.sc;
+
+# Calling The Path Setting Function From The Mojojo Script
+$SH_FILE 7 $user proj11_DDR PR;
+
+# Sourcing The Environment Variables
+source ~/temp_setenv_file.sc;
+rm -rf ~/temp_setenv_file.sc;
+
+# Setting More Environment Variables
+
+setenv      CDS_LIC_TIMEOUT         180
+
+# -------------------------------------------------------------
+# :P
+# Last Update : 26 December, 2019 [01:28:39 PM]
+# -------------------------------------------------------------
+alias       cvs_pcie                'cvs -d :pserver:tc01.truechip.intranet.com:/proj/cvsroot'
+alias       per                     'chmod 755 \!*'
+alias       em                      'emacs'
+alias       proj                    'cd /proj/padmakarr/padmakarr/'
+alias       proj260                 'cd /proj260/'
+alias       proj11                  'cd /proj11/'
+alias       proj110                 'cd /proj110/'
+alias       ws                      'cd $PR/'
+alias       pci_sanity_vcs          'make all LANE_NO=1 SIMULATOR=VCS'
+alias       pci_sanity_nc           'make all LANE_NO=1 SIMULATOR=NC'
+alias       pci_sanity_q            'make all LANE_NO=1 BITS=64'
+alias       mnc                     'make -f Makefile.nc all'
+alias       lsc                     'ls --color'
+alias       nc_lic                  'lmstat -c /tools/lic/CDN/ -a'
+alias       q_lic                   'lmstat -a'
+alias       z                       'cvs diff'
+alias       sv_lrm                  'evince ~/Documents/PDFs/SV/SV_LRM.pdf &'
+alias       sv_lrm_17               'evince ~/Documents/PDFs/SV/SV_LRM_17.pdf &'
+alias       v_lrm                   'evince ~/Documents/PDFs/Verilog/verilog-ieee.pdf &'
+alias       cook_book               'evince ~/Documents/PDFs/UVM/uvm-cookbook-complete-verification-academy.pdf &'
+alias       pcie_spec               'evince ~/Documents/PCIe/PCIE/CB-PCI_Express_Base_4.0r0.7_November-11-2016.pdf &'
+alias       pcie_notes              'gvim ~/pcie_notes'
+alias       nvme_spec               'evince ~/Documents/NVMe/NVMe/nvme_specs/NVM-Express-1_2a.pdf &'
+alias       nvme_spec_3             'evince ~/Documents/NVMe/NVMe/nvme_specs/NVM_Express_Revision_1.3.pdf &'
+alias       nvme_spec_3c            'evince ~/Documents/NVMe/NVMe/nvme_specs/NVM-Express-1_3c-2018.05.24-Ratified.pdf &'
+alias       home                    "cd /proj22/padmakarr/padmakarr/"
+#alias      jtag                    "cd /proj22/PROJ_NEW/PROJ_NEW/padmakarr/padmakarr/jtag_workspace/"
+alias       pcie                    "cd /proj22/PROJ_NEW/PROJ_NEW/padmakarr/padmakarr/pcie_workspace/"
+alias       logs                    "cd /proj22/PROJ_NEW/PROJ_NEW/padmakarr/padmakarr/LOGS_PROGRESS/"
+#alias       gen_fail_log            "grep 'reporter.* Running test \|UVM_ERROR.*@\|UVM_WARNING.*@\|UVM_FATAL.*@\|UVM TEST.*FAILED' regression.log | sed '/reporter.* Running test /i \\n' > Failure_ID_List.log"
+
+# ------------- License Commands : 16 January, 2023 [12:38:02 pm IST]
+#alias       lmv                     'lmstat -f '
+
+# ------------- CVS Commands : 17 February, 2020 [10:06:08 AM]
+alias       co_emmc                 "cvs co tc_sd_card_uvm_vip"
+alias       co_uhs                  "cvs co tc_sd_card_uvm_vip"
+
+# ------------- Application Commands : 26 December, 2019 [01:25:37 PM]
+alias       wave                    'eval "gtkwave \!* &"'
+#alias      gui                     '/proj22/PROJ_NEW/PROJ_NEW/naveenk/naveenk/TrueChipGUI/jdk1.8.0_91/bin/java -jar /proj22/PROJ_NEW/PROJ_NEW/naveenk/naveenk/TrueChipGUI/tc_TruEye-19.3.0.07.jar createlog &'
+#alias      gui_v4                  '/proj22/PROJ_NEW/PROJ_NEW/naveenk/naveenk/TrueChipGUI/jdk1.8.0_91/bin/java -jar /proj22/PROJ_NEW/PROJ_NEW/naveenk/naveenk/TrueChipGUI/tc_TruEye-19.4.0.01.jar createlog &'
+alias       deathNote               '$SH_FILE 2'
+alias       lstat                   "rm -rf ~/.temp_lmview_XX.log; lmstat -a > ~/.temp_lmview_XX.log; gvim ~/.temp_lmview_XX.log; sleep 0.2; rm -rf ~/.temp_lmview_XX.log;"
+alias       vw                      "vcd2wlf"
+alias       vwave                   'eval "vsim -view \!* -do ./../wave.do &"'
+alias       simv                    "simvision sd_card_work_dir/tc*/*shm &"
+alias       fx                      "rm -rf firefox_temp_log.log; nohup firefox >& firefox_temp_log.log &"
+alias       ev                      'nohup eval "rm -rf evince_temp_log.log; nohup evince \!* >& evince_temp_log.log &"'
+alias       evs                     "$SH_FILE 9 1"
+alias       tb                      "rm -rf thunderbird_temp_log.log; thunderbird >& thunderbird_temp_log.log &"
+alias       uvm                     "g $PR/VERILOG_SRC/uvm-1.1d/."
+alias       x05make                 "se_cds05; make -f $TC_CAD_HOME/Makefile"
+alias       x26make                 "se_cds26; make -f $TC_CAD_HOME/Makefile"
+alias       gui                     "/tools/jdk-1.8/jdk1.8.0_91/bin/java -jar /tools/TRUEYE/jar/tc_trueye.jar &"
+alias       gtkemmc                 "gtkwave *.vcd $PR/GTKFILES/EMMC/eMMC_debug_save_file.gtkw &"
+alias       viv                     "/tools/vivado14.7/Vivado_2018.3/2018.3_installed/Vivado/2018.3/bin/vivado &"
+alias       vivhls                  "/tools/vivado14.7/Vivado_2018.3/2018.3_installed/Vivado/2018.3/bin/vivado_hls &"
+alias       xise                    "/tools/Xilinx_14.7/Xilinx/installed/14.7/ISE_DS/ISE/bin/lin64/ise &"
+alias       w2v                     'wlf2vcd -o'
+alias       gtkhbm                  'eval "nohup gtkwave \!* $PR/GTKFILES/HBM/HBM_debug_save_file_all_channels.gtkw &"'
+alias       gtkhbm_dfi              'eval "nohup gtkwave \!* $PR/GTKFILES/HBM/HBM_debug_save_file_all_channels_with_DFI.gtkw &"'
+alias       gtkjtag                 'eval "nohup gtkwave \!* $PR/GTKFILES/JTAG/jtag_bus_intf.gtkw &"'
+alias       cmake                   "make -f $TC_CAD_HOME/Makefile"
+alias       lo                      'eval "libreoffice \!* &"'
+alias       pf                      'ps -aef | grep --color'
+alias       nb                      '$SH_FILE 10'
+alias       emmcmake                'eval "make -f $TC_CAD_HOME/Makefile \!* vip=sd_card VIP_MODEL=EMMC"'
+alias       vsimemmc                'eval "vsim \!* -do $PR/DOFILES_VSIM/EMMC/emmc_wave.do &"'
+alias       gs                      'eval "gvim -O \!* &"'
+alias       gemmccard               'gs $TC_SD_CARD_HOME/env_comp/card/src/tc_sd_card_variables.sv $TC_SD_CARD_HOME/env_comp/card/src/tc_response_sending_logic.sv $TC_SD_CARD_HOME/env_comp/card/src/tc_cmd_decoding_logic.sv $TC_SD_CARD_HOME/env_comp/card/src/tc_emmc_card_mode.sv $TC_SD_CARD_HOME/env_comp/card/src/tc_sd_card_module.sv'
+alias       uhsmakeall              'eval "make -f /tools/tc_cad_home/Makefile all comp_args=+define+TC_LIC_SD_CARD_MAX_VERSION=7 TC_UHS_VERSION=1 TC_UHS2_VERSION=1 vip=sd_card"'
+alias       uhsmakeregress          'eval "make -f /tools/tc_cad_home/Makefile regress comp_args=+define+TC_LIC_SD_CARD_MAX_VERSION=7 TC_UHS_VERSION=1 TC_UHS2_VERSION=1 vip=sd_card"'
+alias       gtkuhs_link             "gtkwave *.vcd $PR/GTKFILES/UHS/uhs_link_interface_debug.gtkw &"
+alias       jtagmake                'eval "make -f $TC_CAD_HOME/Makefile \!* vip=jtag"'
+alias       run11                   'ssh padmakarr@10.0.1.11'
+alias       run110                  'ssh padmakarr@10.0.1.110'
+alias       run21                   'ssh padmakarr@10.0.1.21'
+alias       run17                   'ssh padmakarr@10.0.1.17'
+
+# ------------- File Management Commands : 21 October, 2019 [12:10:40 PM]
+alias       backup                  '$SH_FILE 1'
+alias       nomad                   "$SH_FILE 3"
+alias       cpr                     'cp -r'
+alias       dir                     "$SH_FILE 5"
+alias       mcd                     'eval " mkdir \!*; cd \!*"'
+alias       rn                      '$SH_FILE 9'
+
+# ------------- Sourcing Commands : 21 October, 2019 [12:03:09 PM]
+alias       ca                      'grep -i "^alias.*" ~/.tcshrc'
+
+alias       jtag                    "cd $PR/workspace/jtag_workspace/"
+alias       emmc                    "cd $PR/workspace/emmc_workspace/"
+alias       vivado                  "cd $PR/workspace/vivado_workspace/"
+alias       ise                     "cd $PR/workspace/ise_workspace/"
+alias       hbm                     "cd $PR/workspace/hbm_workspace/"
+alias       sd                      "cd $PR/workspace/sd_workspace/"
+alias       ddr                     "cd $PR/workspace/ddr_workspace/"
+alias       uhs                     "cd $PR/workspace/uhs_workspace/"
+alias       fpu                     "cd $PR/workspace/fpu_workspace/"
+
+# ------------- SetEnv Commands : 21 October, 2019 [12:32:44 PM]
+# Empty Global Variables
+alias       se_emmc                 "$SH_FILE 0 TC_SD_CARD_HOME tc_sd_card_uvm_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_SD_CARD_USER_HOME tc_sd_card_uvm_vip/sim/tc_sd_card_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_uhs                  "$SH_FILE 0 TC_SD_CARD_HOME tc_sd_card_uvm_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_SD_CARD_USER_HOME tc_sd_card_uvm_vip/sim/tc_sd_card_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_plic                 "$SH_FILE 0 TC_PLIC_HOME tc_plic_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_PLIC_USER_HOME tc_plic_vip/sim/tc_plic_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_ahb                  "$SH_FILE 0 TC_AHB3_HOME tc_ahb3_uvm_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_AHB_USER_HOME tc_ahb3_uvm_vip/sim/tc_ahb_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_apb                  "$SH_FILE 0 TC_APB_HOME tc_apb_uvm_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_APB_USER_HOME tc_apb_uvm_vip/sim/tc_apb_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+#alias       se_cad                  "$SH_FILE 0 TC_CAD_HOME tc_cad_home; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_cds26                "$SH_FILE 4 CDS_LIC_FILE 5280@tc26; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_cds05                "$SH_FILE 4 CDS_LIC_FILE 5280@tc05; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_jtag                 "$SH_FILE 0 TC_JTAG_HOME tc_jtag_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_JTAG_USER_HOME tc_jtag_vip/sim/tc_jtag_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_hbm                  "$SH_FILE 0 TC_HBM_HOME tc_hbm_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_HBM_USER_HOME tc_hbm_vip/sim/tc_hbm_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_fpu                  "$SH_FILE 0 TC_FPU_HOME tc_fpu_vip; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc; $SH_FILE 0 TC_FPU_USER_HOME tc_fpu_vip/sim/tc_fpu_user_files; source ~/temp_setenv_file.sc; rm -rf ~/temp_setenv_file.sc;"
+alias       se_ddrint               "$SH_FILE 0 TC_AMBA_I2C_DDR_HOME tc_amba_i2c_ddr_integration/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_DDR_HOME tc_ddr4_uvm_vip/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_AXI_HOME tc_axi_uvm_vip/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_APB_HOME tc_apb4_uvm_vip/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_DDR_USER_HOME tc_amba_i2c_ddr_integration/tc_memory_intg_user_files/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_LPDDR_USER_HOME tc_amba_i2c_ddr_integration/tc_memory_intg_user_files/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_AXI_USER_HOME tc_amba_i2c_ddr_integration/tc_axi_user_files/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_APB_USER_HOME tc_amba_i2c_ddr_integration/tc_apb_user_files/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_LPDDR_HOME tc_lpddr4_vip/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_SERIAL_BUS_HOME tc_serial_uvm_vip/; source ~/temp_setenv_file.sc;  \
+                                     $SH_FILE 0 TC_SERIAL_BUS_USER_HOME tc_amba_i2c_ddr_integration/tc_i2c_user_files/; source ~/temp_setenv_file.sc; rm -f ~/temp_setenv_file.sc;"
+
+# ------------- Alias Functions Shell Script : 23 October, 2019 [10:01:05 AM]
+alias       sh                      "g $SH_FILE"
+
+# -------------------------------------------------------------
+
+# Call license display command
+#lmsall
+
+# Setting the promt
+
+set prompt="[ %m ][ %n ][ %~ ] "
+
+source ~/common_scripts/tcshrc/print_tcshrc
+
+echo "\nx-----------------------------x"
+echo "Sourcing Complete!"
+echo "x-----------------------------x"

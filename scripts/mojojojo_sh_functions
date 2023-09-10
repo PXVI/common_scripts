@@ -1,0 +1,684 @@
+#!/bin/bash
+
+# -------------------------------------------------------------------------------------------------------------------------------------------- #
+# :P 
+# -------------------------------------------------------------------------------------------------------------------------------------------- #
+# Functions : 22 October, 2019 [03:28:25 PM]
+# -------------------------------------------------------------------------------------------------------------------------------------------- #
+
+# 0
+setEnv(){
+    
+    if [ $# -eq 3 -a $3 -eq 1 ]
+    then
+        if [ ! -f ~/temp_setenv_file.sc ]
+        then
+            touch ~/temp_setenv_file.sc;
+        fi
+        # Do not create the Environment Variable from Current Path. Use the full path provided in $2.
+        echo "setenv $1 $2" >> ~/temp_setenv_file.sc;
+        echo "echo 'Environment Variable Set : $1 -> $2'" >> ~/temp_setenv_file.sc;
+        return;
+    fi
+
+    rm -rf ~/temp_setenv_file.sc;
+    touch ~/temp_setenv_file.sc;
+
+    pwd=`pwd`;
+    echo "setenv $1 $pwd/$2" >> ~/temp_setenv_file.sc;
+    echo "echo 'Environment Variable Set : $1 -> $pwd/$2'" >> ~/temp_setenv_file.sc;
+    # Add the following commands as part of the end of the alias
+    # eg: alias do_something "setEnv_func X X; source temp_setenv_file.sc; sleep 0.2; rm -rf temp_setenv_file.sc;"
+    #sleep 1;
+    #rm -rf temp_setenv_file.sc;
+
+}
+
+# 1
+createBackupCopy(){
+    
+    #TODO Add an argument to provide the destination path as well
+
+    _tag=`date "+BACKUP_%Y_%m_%d_%H_%M_%S"`;
+    #echo "Backup creating for $1...";
+
+    local_dir=0;
+
+    if [ $# -eq 1 ]
+    then
+        FILE_NAME=${_tag}_$1;
+    elif [ $# -eq 2 ]
+    then
+        FILE_NAME=${_tag}_$1__$2;
+    fi
+    dollar='$'
+    PR=`echo $PR`
+    #echo "${PR}"
+    # TODO : Add the option to change the main proj area
+    if [ -d "$PR/At_Worlds_End" ]
+    then
+        B_PATH="$PR/At_Worlds_End";
+    elif [ -d "$PR/At_Worlds_End" ]
+    then
+        B_PATH="$PR/At_Worlds_End";
+    else
+        B_PATH="./";
+        local_dir=1;
+    fi
+    
+    cp -r $1 $B_PATH/$FILE_NAME;
+
+    if [ -d $B_PATH/$FILE_NAME -o -f $B_PATH/$FILE_NAME ]
+    then
+        if [ $local_dir -eq 1 ]
+        then
+            echo "[W] Backup Created, but in the local directory!"
+        else
+            echo "[S] Backup copy created!"
+        fi
+    else
+        echo "[E] Backup creation failed!"
+    fi
+
+}
+
+# 2
+deathNote(){
+    
+    #TODO Add the trait to manage day to day entries, rather than jamming all in just one file
+
+    _file=~/.vampire_diaries
+    _enc_file=~/.vampire_diaries_e
+    _time_tag=`date "+%d %B, %Y [%r]"`;
+
+    if [ $1 == "-e" -o $1 == "--enc" ]
+    then
+
+        # TODO : This a pending feature. Keeping this on hold.
+
+        shift;
+        if [ ! -f $_enc_file -a ! -f $_enc_file.zip ]
+        then
+            touch $_enc_file;
+            echo "[S] Created the Encrypted File for the first time!";
+        fi
+
+        if [ -f ${_enc_file}.zip ]
+        then
+            unzip ${_enc_file}.zip -d ~/;
+            echo -n "$_time_tag " >> $_enc_file;
+            for i in $*;
+            do
+                echo -n "$i " >> $_enc_file;
+            done
+            echo "" >> $_enc_file;
+            zip -er $_enc_file.zip $_enc_file;
+            rm -rf $_enc_file;
+        else
+            echo -n "$_time_tag " >> $_enc_file;
+            for i in $*;
+            do
+                echo -n "$i " >> $_enc_file;
+            done
+            echo "" >> $_enc_file;
+            zip -er $_enc_file.zip $_enc_file;
+            rm -rf $_enc_file;
+        fi
+    elif [ $1 == "-et" -o $1 == "--enctail" ]
+    then
+        shift;
+        if [ ! -f $_enc_file -a ! -f $_enc_file.zip ]
+        then
+            echo "[E] File does not exist!";
+        fi
+
+        if [ -f $_enc_file.zip ]
+        then
+            unzip $_enc_file.zip -d ~/;
+            #reset;
+            tail -3 $_enc_file;
+            sleep 1;
+            rm -rf $_enc_file;
+        fi
+    elif [ $1 == "-eo" -o $1 == "--encopen" ]
+    then
+        shift;
+        if [ ! -f $_enc_file -a ! -f $_enc_file.zip ]
+        then
+            echo "[E] File does not exist!";
+        fi
+
+        if [ -f $_enc_file.zip ]
+        then
+            unzip $_enc_file.zip -d ~/;
+            gvim -M $_enc_file;
+            sleep 1;
+            #rm -rf $_enc_file;
+            #reset;
+        fi
+    else
+        if [ ! -f $_file ]
+        then
+            touch $_file;
+        fi
+        echo -n "$_time_tag " >> $_file;
+        for i in $*;
+        do
+            echo -n "$i " >> $_file;
+        done
+        echo "" >> $_file;
+    fi
+    echo "[S] Note Saved!";
+
+}
+
+# 3
+nomad(){
+    
+    # TODO Add a trait to maintain only 5 nomads at a time. More than that and oldest ones get purged.
+    # TODO Add a trait to accept a txt_file as one argument with the file names to produce the list
+
+    # Data files to be picked. Including dirs.
+    _file=~/.vampire_diaries
+
+    _time_tag=`date "+%Y_%m_%d_%H_%M_%S"`;
+    _nomad_tag="nomad";
+    _nomad="${_nomad_tag}_${_time_tag}"
+
+    declare -a NOMAD_FILES;
+
+    # List out the nomad files
+    # Use absolute paths ( tried relative but seems to not work... ) 
+    NOMAD_FILES[0]="/tru/padmakarr/.tcshrc";
+    NOMAD_FILES[1]="/tru/padmakarr/.cshrc";
+    NOMAD_FILES[2]="/tru/padmakarr/scripts";
+    NOMAD_FILES[3]="/tru/padmakarr/.vimrc";
+    NOMAD_FILES[4]="/tru/padmakarr/.alias";
+    NOMAD_FILES[5]="/tru/padmakarr/.vampire_diaries*";
+    NOMAD_FILES[6]="/tru/padmakarr/.vim_padmakarr";
+    NOMAD_FILES[7]="/tru/padmakarr/padmakarr/Papers";
+    NOMAD_FILES[8]="/tru/padmakarr/padmakarr/FPGA_Specs";
+    # NOMAD_FILES[9]="/tru/padmakarr/padmakarr/Specification";
+    NOMAD_FILES[10]="/tru/padmakarr/padmakarr/Synopsys_DesignWare";
+    NOMAD_FILES[11]="/tru/padmakarr/padmakarr/Synthesis";
+    NOMAD_FILES[12]="/tru/padmakarr/padmakarr/User_Manuals";
+    NOMAD_FILES[13]="/tru/padmakarr/notes_p";
+
+
+
+    nomad_size=${#NOMAD_FILES[*]}
+    # Counting in . and .. dirs
+    nomad_size=`expr $nomad_size + 2`;
+
+    if [ ! -d "~/${_nomad}" ]
+    then
+        mkdir ~/${_nomad};
+    fi
+
+    for i in "${NOMAD_FILES[@]}";
+    do
+        # Recursive copying all files
+        cp -R $i ~/${_nomad}/;
+    done
+
+    if [ -d ~/${_nomad} ]
+    then
+        # Creating a tarball
+        tar -cPf ~/${_nomad}.tar ~/${_nomad};
+
+        if [ -f ~/${_nomad}.tar ]
+        then
+            # Getting the size ( number of files ) of the directory
+            nomad_zip_size=`ls -a -1 ~/${_nomad}/ | wc -l`;
+            # Removing the nomad dir    
+            rm -rf ~/${_nomad};
+
+            if [ "${nomad_size}" = "${nomad_zip_size}" ]
+            then
+                echo "[S] Nomad created!";
+            else
+                echo "[W] Nomad created but with not all files!";
+            fi
+        else
+            echo "[E] Nomad creation failed!";
+        fi
+    fi
+}
+
+# 4
+# Add setenv values from outside.
+# This is simply used to set environment variables.
+setEnv_v2(){
+    
+    rm -rf ~/temp_setenv_file.sc;
+    touch ~/temp_setenv_file.sc;
+    echo "setenv $1 $2" >> ~/temp_setenv_file.sc;
+    echo "echo 'Environment Variable Set : $1 -> $2'" >> ~/temp_setenv_file.sc;
+    # Add the following commands as part of the end of the alias
+    # eg: alias do_something "setEnv_func X X; source temp_setenv_file.sc; sleep 0.2; rm -rf temp_setenv_file.sc;"
+    #sleep 1;
+    #rm -rf temp_setenv_file.sc;
+
+}
+
+# 5
+# Create a New Directory with TimeStamp as the Suffix
+mkdir_v1(){
+ 
+    timestamp=`date "+%y_%m_%d_%H_%M"`;
+    dirName="${timestamp}_$1";
+
+    if [ -f ./${dirName} -o -d ./${dirName} ]
+    then
+        echo -n "Directory aready exists. Do you want to delete it? ( y/n ) : ";
+        read someInput;
+        if [ someInput = "y" -o someInput = "Y" ]
+        then
+            rm -rf ./${dirName};
+        else
+            echo "[E] Directory creation terminated!"
+            continue;
+        fi
+    fi
+
+    mkdir ./${dirName};
+}
+
+# 6
+# For .bashrc and/or .tcshrc
+# Creats a Nomad, Backup or other things on periodic basis. The period can be programmed.
+# For example, create copies of neccessary things every Monday. Can be programmed!
+# In case of absense of cron, use the date command eveytime the rc files are sourced.
+
+# 7 ( Application Specific )
+# Set the Environment Variables to specific paths for workspaces and other directories
+setEnv_userPath(){
+    if [ $# -eq 3 ]
+    then
+        iniPath="/$2";
+        suffix="$2";
+        baseName="$1";
+        varName="$1_$2";
+        custName="$3";
+
+        if [ ! -d $iniPath ]
+        then
+            setEnv $custName "~/" 1; 
+            echo "[E] Base path does not exist - $iniPath";
+            return;
+        fi
+
+        while [ 1 ]
+        do
+            if [ -d $iniPath/usr ]
+            then
+                iniPath="$iniPath/usr";
+                continue;
+            elif [ -d $iniPath/$1 ]
+            then
+                iniPath="$iniPath/$1";
+                continue;
+            else
+                break;
+            fi
+        done
+
+        if [ -d $iniPath ]
+        then
+            setEnv $custName $iniPath 1; 
+        else
+            setEnv $custName "~/" 1; 
+            echo "[E] Failed to create the Environment Variable!"
+        fi
+    elif [ $# -eq 2 ]
+    then
+        iniPath="/$2";
+        suffix="$2";
+        baseName="$1";
+        varName="$1_$2";
+
+        if [ ! -d $2 ]
+        then
+            setEnv $varName "~/" 1; 
+            echo "[E] Base path does not exist!";
+            return;
+        fi
+
+        while [ 1 ]
+        do
+            if [ -d $iniPath/usr ]
+            then
+                iniPath="$iniPath/usr";
+                continue;
+            elif [ -d $iniPath/$1 ]
+            then
+                iniPath="$iniPath/$1";
+                continue;
+            else
+                break;
+            fi
+        done
+
+        if [ -d $iniPath ]
+        then
+            setEnv $varName $iniPath 1; 
+        else
+            setEnv $varName "~/" 1; 
+            echo "[E] Failed to create the Environment Variable!"
+        fi
+    elif [ $# -eq 1 ]
+    then
+        # Todo
+        break;
+    else
+        echo "[E] Illegal number of arguments passed!"
+    fi
+}
+
+# 8
+# Create a daily progress file based on the input name
+# Create the dir struecture if it does not already exists
+# Usage Format :
+# createProgress $1 $2 $3
+# Create the progress file with in $1 dir and with $2 as the file name
+# $2 has to be the location of the Parent Progress_Directory for all progress files.
+# If $3 is passed. Open today's progress file or simply if value is 1.
+createProgress(){
+    dir="";
+
+    if [ ! -d $1/Red_Was_Here ]
+    then
+        mkdir $1/Red_Was_Here;
+        dir="$1/Red_Was_Here";
+        echo "[S] Created the Progress_Directory!";
+    else
+        dir="$1/Red_Was_Here";
+    fi
+
+    if [ ! -d $dir/$2 ]
+    then
+        mkdir $dir/$2;
+        dir="$dir/$2";
+        echo "[S] Created the Sub-Dir!";
+    else
+        dir="$dir/$2";
+    fi
+
+    date=`date "+%y_%m_%d"`;
+
+    if [ $# -eq 3 ]
+    then
+        if [ $3 -eq 1 ]
+        then
+            gvim $dir/${date}_${2}.txt;
+            return;
+        else
+            return;
+        fi
+    fi
+
+    if [ -f "$dir/${date}_${2}.txt" ]
+    then
+        echo -n "The progress file ${date}_${2}.txt already exists. Do you wish to overwrite it ? ( y/n ) : ";
+        read someChoice;
+        
+        if [ $someChoice = "y" ]
+        then
+            rm -rf $dir/${date}_${2}.txt;
+            touch $dir/${date}_${2}.txt;
+
+            echo "# ---------------" > $dir/${date}_${2}.txt;
+            echo "# Completed Tasks" >> $dir/${date}_${2}.txt;
+            echo "# ---------------" >> $dir/${date}_${2}.txt;
+
+            if [ ! -f $dir/${date}_${2} ]
+            then
+                rm -rf $dir/${date}_${2};
+                echo "# ---------------" > $dir/${date}_${2}.txt;
+                echo "# Completed Tasks" >> $dir/${date}_${2}.txt;
+                echo "# ---------------" >> $dir/${date}_${2}.txt;
+
+                echo "[S] Created the progress file!"
+            else
+                echo "[E] Failed to create the progress file!"
+                return;
+            fi
+        else
+            echo "[S] Retaining the existing progress file!"
+        fi
+    else
+        rm -rf $dir/${date}_${2};
+        echo "# ---------------" > $dir/${date}_${2}.txt;
+        echo "# Completed Tasks" >> $dir/${date}_${2}.txt;
+        echo "# ---------------" >> $dir/${date}_${2}.txt;
+
+        echo "[S] Created the progress file!"
+    fi
+}
+
+# 9
+# TODO INCOMPLETE FUNCTION
+# Renames the given input file in terms of only _'s
+# Also copy the file into the current locationa
+# TODO Modify the script so that it can also accept paths instead of just filename
+renameFile(){
+    
+    FFNAME=$1;
+
+    NEWNAME=`echo ${FFNAME//\s/_}`;
+    NEWNAME=`echo ${NEWNAME//[(){}.|-]/_}`;
+
+    cp $1 ./${NEWNAME};
+
+    if [ -f ${NEWNAME} ]
+    then
+        echo "[S] Rename Successful!";
+    else
+        echo "[E] Rename Failed!";
+    fi
+}
+
+# 10
+# Creates a notes .log file with the current date and some basic text addition
+# Updates -
+# Added the switch to open yesterday's log
+# Added the feature to ask the user if would like to review last registered log before making the new one
+# TODO the feature which gives stats ( total pending / total done ) of the current log
+noteBook(){
+
+    NBDATE=`date "+%Y_%m_%d_%a"`;
+    NBFULLDATE=`date "+%d %B, %Y [ %A ]"`;
+    NBNAME="nb_${NBDATE}";
+
+    if [ -d "~/notes_p" -a ! -f "~/notes_p" ]
+    then
+        mkdir ~/notes_p;
+
+        if [ ! -d "~/notes_p" -a ! -f "~/notes_p" ]
+        then
+            echo "[S] Notes directory does not exist. Hence, a new one has been created."
+        else
+            echo "[E] Notes directory does not exist and the creation of a new one has failed."
+            return;
+        fi
+    fi
+
+    file_count=`ls -1 ~/notes_p/ | wc -l`;
+
+    if [ $# -eq 1 ]
+    then
+        if [ $1 == "-l" -o $1 == "--last" ]
+        then
+            shift;
+            if [ $file_count != "0" ]
+            then
+                last_file=`ls -1 ~/notes_p/ | tail -1`;
+                if [ "$last_file" == "$NBNAME.txt" ]
+                then
+                    last_file=`ls -1 ~/notes_p/ | tail -2 | head -1`;
+                fi
+
+                gvim ~/notes_p/$last_file &
+                return;
+            else
+                echo "[E] No logs to open."
+                return;
+            fi
+        else
+            echo "[E] Unsupported argument."
+            return
+        fi
+    fi
+
+    if [ ! -f ~/notes_p/${NBNAME}.txt ]
+    then
+
+        if [ $file_count != "0" ]
+        then
+            last_file=`ls -1 ~/notes_p/ | tail -1`;
+
+            echo    "Machine : Do you want to review the last log first? [y/n:Y/N]"
+            echo -n "User    : "
+            read someInput;
+
+            if [ $someInput == "y" -o $someInput == "Y" ]
+            then
+                vi ~/notes_p/$last_file
+            else
+                echo "Machine : Okay then."
+            fi
+
+            pending_list=`grep -x "^.*: Pending\|[ ]*" ~/notes_p/$last_file`;
+        else
+            echo "[S] A new file will be created."
+        fi
+
+        touch ~/notes_p/${NBNAME}.txt;
+
+        # Text to be added in the file
+        echo "-----------------------------------------------------------" >> ~/notes_p/${NBNAME}.txt;
+        echo "Tasks - ${NBFULLDATE}" >> ~/notes_p/${NBNAME}.txt;
+        echo "-----------------------------------------------------------" >> ~/notes_p/${NBNAME}.txt;
+        # echo "" >> ~/notes_p/${NBNAME}.txt;
+
+        if [ "$pending_list" != "" ]
+        then
+            echo "$pending_list" >> ~/notes_p/${NBNAME}.txt;
+        fi
+        
+        if [ ! -f ~/notes_p/${NBNAME}.txt ]
+        then
+            echo "[E] Creation of a new notes file failed."
+            return;
+        fi
+    fi
+
+    gvim ~/notes_p/${NBNAME}.txt;
+}
+
+if [ $1 -eq 0 -a $# -eq 3 ]
+then
+    setEnv $2 $3 0;
+elif [ $1 -eq 1 -a $# -le 3 ]
+then
+    shift;
+    createBackupCopy $@;
+elif [ $1 -eq 2 ]
+then
+    shift;
+    if [ $# -eq 0 ]
+    then
+        echo "deathNote :";
+        echo "-----------";
+        echo "  -h  , --help     - Open the help doc for the function";
+        echo "  -o  , --open     - Open the note file";
+        echo "  -d  , --delete   - Delete the note file completely";
+        echo "  -t  , --tail     - Display the last 3 lines added";
+        echo "  -e  , --enc      - Add to the encrypted file"
+        echo "  -et , --enctail  - Show the last 3 lines of the encrypted file"
+        echo "  -eo , --encopen  - Open the encrypted file"
+    elif [ $# -eq 1 -a `echo "$1" | wc -w` -ne 1  ]
+    then
+        deathNote $@;
+    elif [ $# -eq 1 ]
+    then
+        if [ $1 == "--enc" -o $1 == "-e" -o $1 == "-et" -o $1 == "--enctail" -o $1 == "-eo" -o $1 == "--encopen" ]
+        then
+            deathNote $@;
+        elif [ $1 == "--open" -o $1 == "-o" ]
+        then
+            gvim ~/.vampire_diaries;
+        elif [ $1 == "--tail" -o $1 == "-t" ]
+        then
+            tail -3 ~/.vampire_diaries;
+        elif [ $1 == "-delete" -o $1 == "-d" ]
+        then
+            rm -rf ~/.vampire_diaries;
+        elif [ $1 == "--help" -o $1 == "-h" ]
+        then
+            echo "deathNote :";
+            echo "-----------";
+            echo "  -h  , --help     - Open the help doc for the function";
+            echo "  -o  , --open     - Open the note file";
+            echo "  -d  , --delete   - Delete the note file completely";
+            echo "  -t  , --tail     - Display the last 3 lines added";
+            echo "  -e  , --enc      - Add to the encrypted file"
+            echo "  -et , --enctail  - Show the last 3 lines of the encrypted file"
+            echo "  -eo , --encopen  - Open the encrypted file"
+        else
+            echo "deathNote :";
+            echo "-----------";
+            echo "  -h  , --help     - Open the help doc for the function";
+            echo "  -o  , --open     - Open the note file";
+            echo "  -d  , --delete   - Delete the note file completely";
+            echo "  -t  , --tail     - Display the last 3 lines added";
+            echo "  -e  , --enc      - Add to the encrypted file"
+            echo "  -et , --enctail  - Show the last 3 lines of the encrypted file"
+            echo "  -eo , --encopen  - Open the encrypted file"
+        fi
+    else
+        deathNote $@;
+        echo "Note Saved!";
+    fi
+elif [ $1 -eq 3 -a $# -eq 1 ]
+then
+    nomad;
+elif [ $1 -eq 4 -a $# -eq 3 ]
+then
+    setEnv_v2 $2 $3;
+elif [ $1 -eq 5 -a $# -eq 2 ]
+then
+    mkdir_v1 $2;
+elif [ $1 -eq 7 ]
+then
+    shift;
+    setEnv_userPath $@;
+elif [ $1 -eq 8 -a $# -le 4 -a $# -ge 2 ]
+then
+    shift;
+    createProgress $@;
+elif [ $1 -eq 9 ]
+then
+    shift;
+    renameFile $@;
+elif [ $1 -eq 10 ]
+then
+    shift;
+    if [ $# -eq 1 ]
+    then
+        if [ $1 == "-h" -o $1 == "--help" ]
+        then
+            echo "--------------------------------------------------------";
+            echo "    nB    ";
+            echo "--------------------------------------------------------";
+            echo "  -h  , --help     - Open the help info for the function";
+            echo "  -l  , --last     - Open the last note file";
+        else
+            noteBook $@;
+        fi
+    else
+            noteBook $@;
+    fi
+else
+    echo "Function does not exist yet..."
+fi

@@ -1,0 +1,182 @@
+
+colorscheme slate
+highlight Normal guibg=black
+hi NonText guibg=black
+
+" -----------------------------------------
+" Temporary Code                           
+" -----------------------------------------
+let g:partialPath = '~/common_scripts/vimrc'
+
+syn sync lines=1000
+
+syntax on
+
+"Java settings {{{
+let java_highlight_functions=1
+
+autocmd BufRead,BufNewFile *.java set makeprg=javac\ %
+"autocmd BufRead BufNewFile *.java set makeprg=ant\ -emacs
+
+" SV Syntax Path
+
+" Mark Klips as XML files (17/2/2005)
+autocmd BufRead,BufNewFile *.klip set filetype=xml
+" .v and bsv as verilog
+autocmd BufRead,BufNewFile *.bsv set filetype=verilog
+autocmd BufRead,BufNewFile *.v set filetype=verilog_systemverilog
+autocmd BufRead,BufNewFile *.vh set filetype=verilog_systemverilog
+autocmd BufRead,BufNewFile *.sv set filetype=verilog_systemverilog
+autocmd BufRead,BufNewFile *.svh set filetype=verilog_systemverilog
+autocmd BufRead,BufNewFile *.lib set filetype=verilog
+autocmd BufRead,BufNewFile *.pl set filetype=perl
+
+execute 'autocmd BufRead,BufNewFile *.v   so'.g:partialPath.'/vim/syntax/verilog_systemverilog.vim'
+execute 'autocmd BufRead,BufNewFile *.vh  so'.g:partialPath.'/vim/syntax/verilog_systemverilog.vim'
+execute 'autocmd BufRead,BufNewFile *.sv  so'.g:partialPath.'/vim/syntax/verilog_systemverilog.vim'
+execute 'autocmd BufRead,BufNewFile *.svh so'.g:partialPath.'/vim/syntax/verilog_systemverilog.vim'
+
+" Reload settings file everytime its written
+"autocmd! bufwritepost _vimrc source $VIM/_vimrc
+
+"Java Settings End }}}
+
+"##########################################################
+"       Verilog + SystemVerilog Syntax
+"##########################################################
+
+let g:matchIt1 = g:partialPath.'/vim/vim73/macros/matchit.vim'
+let g:matchIt2 = g:partialPath.'/vim/macros/matchit.vim'
+
+execute 'source'.g:matchIt1
+execute 'source'.g:matchIt2
+
+set incsearch
+set number
+
+set guifont=Monospace\ 12
+set autoindent!
+set smartindent
+set showmatch
+set ruler
+set showmode    
+set showcmd
+set ic
+
+"=====================================
+"Misc
+"=====================================
+" The width of a TAB is set to 4.
+" Still it is a \t. It is just that
+" Vim will interpret it to be having
+" a width of 4 spaces.
+set tabstop=4
+" Sets the number of columns for a TAB
+set softtabstop=0
+" Expand TABs to spaces
+set expandtab
+" Indents will have a width of 4
+set shiftwidth=4
+set smarttab
+
+set lines=600 columns=2000
+
+" show status line
+set ls=2
+"Make no swap
+set noswapfile
+"Make no *.bak
+set nobackup
+" keep backup while we are editing
+"set writebackup
+"Do not wrap text
+set nowrap
+set guioptions+=b
+" enable highlight searches
+set hlsearch
+"Turn this ON when we want to debug
+"set verbose=9
+
+"General Options ends }}}
+"use our custom font
+if has("gui")
+	"set guifont=Courier_New:h010:cANSI
+endif
+
+"Netrw Settings
+let g:netrw_sort_sequence='[\/]$,\<core\%(\.\d\+\)\=\>,\.h$,\.c$,\.cpp$,\~\=\*$,\.o$,\.obj$,\.info$,\.swp$,\.bak$,\~$,\.sv,\.v,\.log,\.pl,\.meta'
+let g:netrw_special_syntax=0
+
+"Let NETRW Remove Non Empty Directories
+let g:netrw_localrmdir='rm -r'
+
+" ---------
+" Functions
+" ---------
+
+function NumberToggle()
+  if &relativenumber
+    set norelativenumber
+  else
+    set relativenumber
+  endif
+endfunc
+
+
+" ------------------------------------------------------------------------------------------------
+" :P
+" Shortcut Mapping : 22 October, 2019 [12:22:11 PM]
+" ------------------------------------------------------------------------------------------------
+
+" ALT+`
+  map <A-1> <Left><HOME>
+" ALT+1
+  map <A-2> <Right><HOME>
+  map m \|
+  map M _
+  map eq <C-W>=
+
+  map <F1> :w!
+  map <F2> :wa!
+  map <F3> :vs\|E
+"  map <F4> :
+"  Open the netrw File System
+  map <F4> <ESC>:E
+
+  map , 30<
+  map . 30>
+  map <TAB> 30l
+  map <C-TAB> 30h
+
+" ---------------------------
+" Global Linux Clipboard Copy
+" ---------------------------
+
+" Copy to clipboard  : Ctrl + c
+  map <C-c> "+y
+" Paste to clipboard : Ctrl + p
+  map <C-p> "+p
+
+" Source the .vimrc file
+  map svrc :source ~/.vimrc<CR>
+
+" Invoke the Shift-5 command ( toggles between scopes )
+" Alt-q
+  map <A-q> %
+
+" -----------------------------
+" Indentation Fixing Macro V2.0
+" -----------------------------
+
+map <F7> <ESC>gg<Home><ESC>:set nowrapscangg^:%s/^\s*//gIgg/^\s*\<module\>\\|^\s*\<function\>\\|^\s*\<begin\>\\|^\s*\<class\>gg^@i
+map <C-F7> <ESC>gg<Home><ESC>:set nowrapscangg^:%s/^\s*//gIgg/^\s*\(begin\\|function\\|task\\|class\\|virtual\s*\(class\\|function\\|task\)\)gg^@i
+
+" Reopen file from the same line after closed even when not saved
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" Switch Between Relative Number Features
+nnoremap <C-n> :call NumberToggle()<cr>
+
+noremap <C-F1> :silent! %s/^\s\{1,\}\n\|\s\{1,\}$\n//gI

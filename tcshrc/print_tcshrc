@@ -1,0 +1,200 @@
+#++++++++++++++++++++++ SOURCE SCRIPTS ++++++++++++++++++++++++
+
+#        settings  for interactive shells
+source "$TOOLS/.tcshrc.set"
+
+#        aliases   for interactive shells
+source "$TOOLS/.tcshrc.alias"
+
+
+#        bindkeys   for interactive shells
+source "$TOOLS/.tcshrc.bindkey"
+
+#        completions for interactive shells
+source "$TOOLS/.tcshrc.complete"
+
+#        commands for interactive shells
+#source $TOOLS/.cshrc
+## FIXME this is an example, shows date and current directory
+
+source "$HOME/.cshrc"
+
+#++++++++++++++++++++++ COMMON TCSH CODE ++++++++++++++++++++++
+
+echo ""
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo " :P -> RC Details                                       +"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo " User: $USER                                               +"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo -n " "
+date "+%d %B, %Y"
+echo -n " "
+date "+%H:%M:%S"
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo -n " Questa Simulator Version : ";
+cat $MTI_HOME/.version.txt;
+echo -n " NC : ";
+head -1 $NC_HOME/../readme/README;
+echo -n " Synopsys VCS : ";
+basename $VCS_HOME;
+echo ""
+echo -n " RLM License : ";
+echo $RLM_LICENSE;
+echo -n " Synopsys License : ";
+echo $SNPSLMD_LICENSE_FILE;
+echo -n " CDS License : ";
+echo $CDS_LIC_FILE;
+echo -n " MGLS License : ";
+echo $MGLS_LICENSE_FILE;
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+echo ""
+
+echo "**********************"
+echo "VNC Server Setup Steps"
+echo "**********************"
+echo ""
+echo "1. Connect to the TC VPN using softether"
+echo "2. Open putty or any ssh tool to connect to TC server via ssh terminal."
+echo "3. Once connected via ssh, execute the 'vncserver' command"
+echo "4. After the command is executed, a vncserver session will be created with a port number"
+echo "5. Open VNC viewer and connect to the respective server with the port number that the previous command provided. Eg : if port number is 22 on 10.0.1.11 server"
+echo "   Then connect to the address 10.0.1.11:22 on VNC viewer"
+
+echo ""
+echo "**********************"
+echo "CVS Commands          "
+echo "**********************"
+echo ""
+echo "Keywords you need to be aware of while using CVS ( Concurrent Versioning System )"
+echo ""
+echo "1. REPO/Repository"
+echo "2. Checkout"
+echo "3. Checkin/Commit"
+echo "4. Update"
+echo "5. Brance/TAG"
+echo ""
+echo "Basic Commands For CVS ( the commands most commonly used )"
+echo ""
+echo "cvs co <cvs_vip_repo_name>                -> Get a fresh copy/checkout of the <cvs_vip_repo_name> repository."
+echo "cvs -nq up                                -> Shows if there any change between the current copy and the main cvs repository."
+echo "                                          -> 'M' means file is modified, 'C' means the current file and main file have a conflict, 'U' there are new changes in the main repo which are not there in local copy."
+echo "cvs tag -b <TAG_NAME>                     -> This creates a tagged branch of the current cvs local copy."
+echo "cvs co -r <TAG_NAME> <cvs_vip_repo_name>  -> Takes a checkout of the specific tag of that <cvs_vip_repo_name>."
+echo "cvs up                                    -> Merges the changes frim the main repo into the current repo."
+echo "                                          -> 'M', 'U' & 'C' suffixes might show up."
+echo "cvs status -v                             -> Shows the version history of the given local repository."
+echo "cvs annotate <file_name>                  -> Shows line wise changes and the revision of the file. Along with who made the changes."
+echo "cvs add <file_name>                       -> Schedules the file to be added, ie it is cmpleted merged with main repo once checkin command is run."
+echo "cvs ci -m '<comment>' <file_name>         -> Merges the local updated copy into the main repo and updates the revision number."
+echo "cvs log <file_name>                       -> Get the revision history along with all the changes made to the file."
+echo "cvs up -r <rev_num> <file_name>           -> Updates the particular file with the specific revision version."
+echo "cvs rm <file_name>                        -> Schedules a file to be removed from the main database. The file will be removed after the check-in command is called."
+echo "cvs diff <file_name>                      -> Shows the differences between the current file nd the checked in original checkout file."
+echo ""
+echo "Typical way to resolve conflicts in a file after taking an update"
+echo ""
+echo "1. Run cvs up and take an update on the file."
+echo "2. Once it is established that there are conficts, open the file."
+echo "3. The piece of code under the '<<<<<<<<' string is the code from your version of the file."
+echo "4. The piece of code under the '>>>>>>>>' string is the code from the checked in original version of the file."
+echo "5. You must decide which changes to keep and which to remove. Along with this you must also remove the '<<<<<<<<' and '>>>>>>>>>' strings to avoid compilation error."
+echo "6. After completing the above steps, check for any compilation error."
+echo "7. If no compilation errors are there, then checkin the file in the same manner as you would do any other file."
+echo ""
+echo "Typical way of checking in your changes made to a file"
+echo ""
+echo "1. cvs up"
+echo "2. -- Resolve all the conflicts if present in any files --"
+echo "3. cvs ci -m '<comments>' <file_name>"
+
+echo ""
+echo "**********************"
+echo "Common BASH Commands  "
+echo "**********************"
+echo ""
+echo "Note : To understand how a command is supposed to be used, please run the 'man <command_name>' command."
+echo ""
+echo "1. cd - Change Directory"
+echo "2. ls - List Files"
+echo "3. cat - Print the contents of the file"
+echo "4. cp - Copy"
+echo "5. mv - Move"
+echo "6. mkdir - Make directory"
+echo "7. rm - Remove"
+echo "8. touch - Create and empty file"
+echo "9. locate - Locate a file in a the entire database"
+echo "10. find - Find a file in the provided path"
+echo "11. grep - Search for strings inside files"
+echo "12. du - Disk Usage"
+echo "13. head - Prints top 10 lines of a file"
+echo "14. tail - Prints last 10 lines of a file"
+echo "15. cvs - Concurrent Version System"
+echo "16. diff - Differences between files"
+echo "17. gvimdiff - LIke diff but opens in gvim"
+echo "18. chmod - Change access modifiers"
+echo "19. kill - Kill processes"
+echo "20. jobs - Prints the list of jobs running"
+echo "21. echo - Pirints the passed argument to the terminal"
+echo "22. uniq - Returns a single instance of all uniq strings from a file"
+echo "23. wc - Word Count"
+echo "24. source - BASH Source"
+echo ""
+echo "It is possible to run multiple commands in a sequentially manner where one command passes its output to the next command to work on"
+echo "Example : cat <file_name> | grep -i 'Hello' | uniq"
+echo "The above command first tries to display contents of <file_name>, but since '|' is used, the contents are passed to the next command, which is grep here."
+echo "grep searches for a string 'Hello' and passes its output to next command."
+echo "uniq displays only one instances of a string after going through all the lines of data provided to it."
+echo "Finally the output is a simple single line 'Hello'."
+
+#++++++++++++++++++++++ COMMON ALIASES ++++++++++++++++++++++++
+
+alias       ...                     'cd ../../'
+alias       ....                    'cd ../../../'
+alias       adobe                   'eval "/tools/Adobe-/Reader-/8/Reader8/bin/acroread \!* >& acroread_log.log &; rm -rf acroread_log.log;"'
+alias       lmsall                  'echo "\n**************"; echo "License Status";echo "**************\n"; lmstat -a | grep ".*Total of.*issued" | sort; echo "";'
+alias       lmq                     'lmstat -f msimhdlsim'
+alias       lmx                     'lmstat -f Xcelium_Single_Core'
+alias       lmimc                   'lmstat -f Integrated_Metrics_Center'
+
+alias       cvs                     'cvs -d :pserver:tc29.truechip.intranet.com:/REPO/cvsroot'
+#alias       cvs                     'cvs -d :pserver:tc110.truechip.intranet.com:/REPO/cvsroot'
+#alias       cvs                     'cvs -d :pserver:tc11.truechip.intranet.com:/REPO/cvsroot'
+
+alias       g                       "gvim"
+alias       rr                      'rm -irf'
+alias       mk                      'mkdir -p'
+alias       ct                      'cat ~/.tcshrc'
+alias       st                      'source ~/.tcshrc'
+alias       et                      'g ~/.tcshrc'
+alias       vrc                     'g ~/.vimrc'
+
+alias       lic                     'echo ""; \
+                                     echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"; \
+                                     echo -n " Questa Simulator Version : "; \
+                                     cat $MTI_HOME/.version.txt; \
+                                     echo -n " NC : "; \
+                                     head -1 $NC_HOME/../readme/README; \
+                                     echo -n " Synopsys VCS : "; \
+                                     basename $VCS_HOME; \
+                                     echo ""; \
+                                     echo -n " RLM License : "; \
+                                     echo $RLM_LICENSE; \
+                                     echo -n " Synopsys License : "; \
+                                     echo $SNPSLMD_LICENSE_FILE; \
+                                     echo -n " CDS License : "; \
+                                     echo $CDS_LIC_FILE; \
+                                     echo -n " MGLS License : "; \
+                                     echo $MGLS_LICENSE_FILE; \
+                                     echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"; \
+                                     echo "";'
+
+#++++++++++++++++++++++ USE-CASE SPECIFIC +++++++++++++++++++++
+
+alias       gen_fail_log            "grep 'UVM_ERROR.*@\|UVM_WARNING.*@\|UVM_FATAL.*@\|UVM TEST.*FAILED' regression.log | sed '/reporter.* Running test /i \\n' > Failure_ID_List.log"
+
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+echo "\nx-------------------------------------x"
+echo "DDR Common RC Sourcing Complete!"
+echo "x-------------------------------------x"
